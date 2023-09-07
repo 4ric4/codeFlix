@@ -15,7 +15,7 @@ export const adminJs = new AdminJs({
   resources:adminJsResources,
   branding: {
     companyName: 'CodeFlix',
-    logo: '',
+    logo: './codeflix.png',
     theme: {
       colors: {
         primary100: '#ff0043',

@@ -1,10 +1,11 @@
 // src/adminjs/index.ts
-
+import { User } from '../../models'
 import AdminJs from 'adminjs'
 import AdminJsExpress from '@adminjs/express'
 import AdminJsSequelize from '@adminjs/sequelize'
 import { adminJsResources } from './resources'
 import { sequelize } from '../database'
+import bcrypt from 'bcrypt'
 
 
 AdminJs.registerAdapter(AdminJsSequelize)
@@ -15,7 +16,7 @@ export const adminJs = new AdminJs({
   resources:adminJsResources,
   branding: {
     companyName: 'CodeFlix',
-    logo: './codeflix.png',
+    logo: '/codeflix.png',
     theme: {
       colors: {
         primary100: '#ff0043',
@@ -36,4 +37,22 @@ export const adminJs = new AdminJs({
   }
 })
 
-export const adminJsRouter = AdminJsExpress.buildRouter(adminJs)
+export const adminJsRouter = AdminJsExpress.buildAuthenticatedRouter(adminJs, {
+  authenticate: async (email,password) => {
+      const user = await User.findOne({where :{email}})
+
+      if(user && user.role === 'admin'){
+        const matched = await bcrypt.compare(password,user.password)
+
+        if (matched){
+          return user
+        }
+      }
+
+      return false
+  },
+  cookiePassword:'123456'
+},null,{
+  resave:false,
+  saveUninitialized:false
+})

@@ -1,13 +1,15 @@
 import  express  from "express";
 import { sequelize } from "./database";
 import { adminJs, adminJsRouter } from "./adminjs";
+import { router } from "./router";
 
 const app = express ()
 
 app.use(express.static('public'))
 
-//caminhos e rotas
 app.use(adminJs.options.rootPath,adminJsRouter)
+
+app.use(router)
 
 const PORT  =   process.env.PORT || 3000
 

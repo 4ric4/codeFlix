@@ -6,7 +6,7 @@ export const categoryService = {
 
         const {count,rows} = await Category.findAndCountAll({
             attributes:['id','name','position'],
-            order:['position'],
+            order:[['order','ASC']],
             limit: perPage,
             offset
         })
